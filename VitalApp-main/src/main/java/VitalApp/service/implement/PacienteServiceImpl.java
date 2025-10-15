@@ -32,6 +32,7 @@ public class PacienteServiceImpl implements PacienteService {
 
         Paciente paciente = Paciente.builder()
                 .nombre(pacienteDTO.nombre().trim())
+                .email(pacienteDTO.email().trim())
                 .build();
 
         return pacienteRepo.save(paciente).getId();
@@ -46,6 +47,7 @@ public class PacienteServiceImpl implements PacienteService {
         }
 
         paciente.setNombre(pacienteDTO.nombre().trim());
+        paciente.setEmail(pacienteDTO.email().trim());
 
         return pacienteRepo.save(paciente).getId();
     }

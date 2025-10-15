@@ -33,6 +33,7 @@ public class MedicoServiceImpl implements MedicoService {
         Medico nuevoMedico = Medico.builder()
                 .nombre(medicoDTO.nombre())
                 .especialidad(medicoDTO.especialidad())
+                .email(medicoDTO.email())
                 .horariosDisponibles(new ArrayList<>())
                 .build();
 
@@ -48,6 +49,7 @@ public class MedicoServiceImpl implements MedicoService {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
         medico.setEspecialidad(medicoDTO.especialidad());
+        medico.setEmail(medicoDTO.email());
 
         return medicoRepo.save(medico).getId();
     }

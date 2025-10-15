@@ -10,5 +10,6 @@ public record EditarMedicoDTO(
         @NotBlank @Length(max = 36) String id,
         @NotBlank @Length(max = 100) String nombre,
         @NotBlank @Length(max = 50) String especialidad,
+        @NotBlank @Length(max = 100) String email,
         @NotNull List<HorarioMedico> horariosDisponibles
 ) {}

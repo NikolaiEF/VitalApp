@@ -21,9 +21,9 @@ public class Medico {
     @Id
     @EqualsAndHashCode.Include
     private String id;
-
     private String nombre;
     private String especialidad;
+    private String email;
     private List<HorarioMedico> horariosDisponibles;
 
 }

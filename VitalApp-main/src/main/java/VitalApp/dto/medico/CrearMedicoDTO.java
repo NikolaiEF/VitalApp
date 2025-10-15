@@ -10,5 +10,6 @@ import java.util.List;
 public record CrearMedicoDTO(
         @NotBlank @Length(max = 100) String nombre,
         @NotBlank @Length(max = 50) String especialidad,
+        @NotBlank @Length(max = 100) String email,
         @NotNull List<HorarioMedico> horariosDisponibles
 ) {}

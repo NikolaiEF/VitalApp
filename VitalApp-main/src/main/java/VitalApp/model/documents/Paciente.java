@@ -17,6 +17,6 @@ public class Paciente {
     @Id
     @EqualsAndHashCode.Include
     private String id;
-
+    private String email;
     private String nombre;
 }

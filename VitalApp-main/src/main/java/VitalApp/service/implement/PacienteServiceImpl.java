@@ -6,6 +6,7 @@ import VitalApp.dto.paciente.ItemPacienteDTO;
 import VitalApp.model.documents.Paciente;
 import VitalApp.repository.PacienteRepository;
 import VitalApp.service.service.PacienteService;
+import VitalApp.service.util.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class PacienteServiceImpl implements PacienteService {
 
     private final PacienteRepository pacienteRepo;
+    private final EmailService emailService;
 
     @Override
     public String crearPaciente(CrearPacienteDTO pacienteDTO) throws Exception {
@@ -35,7 +37,15 @@ public class PacienteServiceImpl implements PacienteService {
                 .email(pacienteDTO.email().trim())
                 .build();
 
-        return pacienteRepo.save(paciente).getId();
+        String id = pacienteRepo.save(paciente).getId();
+
+        emailService.enviarBienvenida(
+                pacienteDTO.email(),
+                pacienteDTO.nombre(),
+                false
+        );
+
+        return id;
     }
 
     @Override

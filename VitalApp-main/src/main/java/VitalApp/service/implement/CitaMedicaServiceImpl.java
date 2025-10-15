@@ -12,6 +12,7 @@ import VitalApp.repository.CitaMedicaRepository;
 import VitalApp.repository.MedicoRepository;
 import VitalApp.repository.PacienteRepository;
 import VitalApp.service.service.CitaMedicaService;
+import VitalApp.service.util.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class CitaMedicaServiceImpl implements CitaMedicaService {
     private final CitaMedicaRepository citaRepo;
     private final MedicoRepository medicoRepo;
     private final PacienteRepository pacienteRepo;
+    private final EmailService emailService;
 
     @Override
     public String agendarCita(CrearCitaMedicaDTO dto) throws Exception {
@@ -58,7 +60,23 @@ public class CitaMedicaServiceImpl implements CitaMedicaService {
                 .estado(EstadoCita.PENDIENTE)
                 .build();
 
-        return citaRepo.save(cita).getId();
+        String id = citaRepo.save(cita).getId();
+
+        emailService.enviarConfirmacionCita(
+                paciente.getEmail(),
+                paciente.getNombre(),
+                horarioSeleccionado.getFecha().toString(),
+                horarioSeleccionado.getHoraInicio().toString()
+        );
+
+        emailService.enviarConfirmacionCita(
+                medico.getEmail(),
+                medico.getNombre(),
+                horarioSeleccionado.getFecha().toString(),
+                horarioSeleccionado.getHoraInicio().toString()
+        );
+
+        return id;
     }
 
     @Override

@@ -4,7 +4,9 @@ import VitalApp.dto.medico.*;
 import VitalApp.model.documents.Medico;
 import VitalApp.model.vo.HorarioMedico;
 import VitalApp.repository.MedicoRepository;
+import VitalApp.repository.PacienteRepository;
 import VitalApp.service.service.MedicoService;
+import VitalApp.service.util.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class MedicoServiceImpl implements MedicoService {
 
     private final MedicoRepository medicoRepo;
+    private final EmailService emailService;
 
     @Override
     public String crearMedico(CrearMedicoDTO medicoDTO) throws Exception {
@@ -37,7 +40,15 @@ public class MedicoServiceImpl implements MedicoService {
                 .horariosDisponibles(new ArrayList<>())
                 .build();
 
-        return medicoRepo.save(nuevoMedico).getId();
+        String id = medicoRepo.save(nuevoMedico).getId();
+
+        emailService.enviarBienvenida(
+                medicoDTO.email(),
+                medicoDTO.nombre(),
+                true // es médico
+        );
+
+        return id;
     }
 
     @Override

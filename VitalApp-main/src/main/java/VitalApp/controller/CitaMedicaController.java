@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/citaMedica")
-
 public class CitaMedicaController {
 
     private final CitaMedicaService citaMedicaService;
@@ -46,7 +46,10 @@ public class CitaMedicaController {
     }
 
     @PostMapping("/resultado/{idCita}")
-    public ResponseEntity<MensajeDTO<String>> agregarResultado(@PathVariable String idCita, @Valid @RequestBody CrearResultadoMedicoDTO dto) throws Exception {
+    public ResponseEntity<MensajeDTO<String>> agregarResultado(
+            @PathVariable String idCita,
+            @Valid @RequestBody CrearResultadoMedicoDTO dto) throws Exception {
+
         citaMedicaService.agregarResultadoMedico(idCita, dto);
         return ResponseEntity.ok(new MensajeDTO<>(false, "Resultado médico agregado exitosamente"));
     }

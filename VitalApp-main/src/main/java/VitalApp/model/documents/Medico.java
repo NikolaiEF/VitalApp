@@ -1,5 +1,6 @@
 package VitalApp.model.documents;
 
+import VitalApp.model.enums.jornadaMedico;
 import VitalApp.model.vo.HorarioMedico;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -22,8 +23,10 @@ public class Medico {
     @EqualsAndHashCode.Include
     private String id;
     private String nombre;
+    private String apellido;
     private String especialidad;
-    private String email;
+    private String correo;
     private List<HorarioMedico> horariosDisponibles;
+    private jornadaMedico jornadaMedico;
 
 }

@@ -70,7 +70,7 @@ public class CitaMedicaServiceImpl implements CitaMedicaService {
         );
 
         emailService.enviarConfirmacionCita(
-                medico.getEmail(),
+                medico.getCorreo(),
                 medico.getNombre(),
                 horarioSeleccionado.getFecha().toString(),
                 horarioSeleccionado.getHoraInicio().toString()

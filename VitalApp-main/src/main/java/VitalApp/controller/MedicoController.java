@@ -39,6 +39,7 @@ public class MedicoController {
     @GetMapping("/listar-todo")
     public ResponseEntity<MensajeDTO<List<ItemMedicoDTO>>> listarMedicos() {
         List<ItemMedicoDTO> lista = medicoService.listarMedicos();
+        System.out.println(lista);
         return ResponseEntity.ok(new MensajeDTO<>(false, lista));
     }
 

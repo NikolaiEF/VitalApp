@@ -25,25 +25,29 @@ public class MedicoServiceImpl implements MedicoService {
 
     @Override
     public String crearMedico(CrearMedicoDTO medicoDTO) throws Exception {
-        if (existeNombre(medicoDTO.nombre())) {
-            throw new Exception("El médico con nombre " + medicoDTO.nombre() + " ya está registrado.");
-        }
+
+       if (medicoRepo.existsById(medicoDTO.id().trim())) {
+           throw new Exception("Ya existe un medico con la cédula: " + medicoDTO.id());
+       }
 
         if (medicoDTO.nombre() == null || medicoDTO.nombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
 
         Medico nuevoMedico = Medico.builder()
-                .nombre(medicoDTO.nombre())
-                .especialidad(medicoDTO.especialidad())
-                .email(medicoDTO.email())
+                .id(medicoDTO.id().trim())
+                .nombre(medicoDTO.nombre().trim())
+                .apellido(medicoDTO.apellido().trim())
+                .especialidad(medicoDTO.especialidad().trim())
+                .correo(medicoDTO.correo().trim())
                 .horariosDisponibles(new ArrayList<>())
+                .jornadaMedico(medicoDTO.jornadaMedico())
                 .build();
 
         String id = medicoRepo.save(nuevoMedico).getId();
 
         emailService.enviarBienvenida(
-                medicoDTO.email(),
+                medicoDTO.correo(),
                 medicoDTO.nombre(),
                 true // es médico
         );
@@ -60,7 +64,7 @@ public class MedicoServiceImpl implements MedicoService {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
         medico.setEspecialidad(medicoDTO.especialidad());
-        medico.setEmail(medicoDTO.email());
+        medico.setCorreo(medicoDTO.email());
 
         return medicoRepo.save(medico).getId();
     }
@@ -86,7 +90,7 @@ public class MedicoServiceImpl implements MedicoService {
     public List<ItemMedicoDTO> listarMedicos() {
         return medicoRepo.findAll()
                 .stream()
-                .map(m -> new ItemMedicoDTO(m.getId(), m.getNombre(), m.getEspecialidad()))
+                .map(m -> new ItemMedicoDTO(m.getId(), m.getNombre(), m.getApellido(), m.getEspecialidad(), m.getCorreo(), m.getJornadaMedico()))
                 .collect(Collectors.toList());
     }
 

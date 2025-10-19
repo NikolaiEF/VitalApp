@@ -28,13 +28,19 @@ public class PacienteServiceImpl implements PacienteService {
             throw new IllegalArgumentException("El nombre del paciente no puede estar vacío.");
         }
 
-        if (existeNombre(pacienteDTO.nombre())) {
-            throw new Exception("Ya existe un paciente con el nombre: " + pacienteDTO.nombre());
+        if (pacienteRepo.existsById(pacienteDTO.id().trim())) {
+            throw new Exception("Ya existe un paciente con la cédula: " + pacienteDTO.id());
         }
 
         Paciente paciente = Paciente.builder()
+                .id(pacienteDTO.id().trim())
                 .nombre(pacienteDTO.nombre().trim())
+                .apellido(pacienteDTO.apellido().trim())
                 .email(pacienteDTO.email().trim())
+                .telefono(pacienteDTO.telefono().trim())
+                .rh(pacienteDTO.rh().trim())
+                .fechaNacimiento(pacienteDTO.fechaNacimiento().trim())
+                .direccion(pacienteDTO.direccion().trim())
                 .build();
 
         String id = pacienteRepo.save(paciente).getId();
@@ -72,16 +78,35 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public ItemPacienteDTO obtenerInformacionPaciente(String id) throws Exception {
         Paciente paciente = obtenerPacientePorId(id);
-        return new ItemPacienteDTO(paciente.getId(), paciente.getNombre());
+        return new ItemPacienteDTO(
+                paciente.getId(),
+                paciente.getNombre(),
+                paciente.getApellido(),
+                paciente.getEmail(),
+                paciente.getTelefono(),
+                paciente.getRh(),
+                paciente.getFechaNacimiento(),
+                paciente.getDireccion()
+        );
     }
 
     @Override
     public List<ItemPacienteDTO> listarPacientes() {
         return pacienteRepo.findAll()
                 .stream()
-                .map(p -> new ItemPacienteDTO(p.getId(), p.getNombre()))
+                .map(p -> new ItemPacienteDTO(
+                        p.getId(),
+                        p.getNombre(),
+                        p.getApellido(),
+                        p.getEmail(),
+                        p.getTelefono(),
+                        p.getRh(),
+                        p.getFechaNacimiento(),
+                        p.getDireccion()
+                ))
                 .collect(Collectors.toList());
     }
+
 
     private boolean existeNombre(String nombre) {
         return pacienteRepo.existsByNombre(nombre.trim());

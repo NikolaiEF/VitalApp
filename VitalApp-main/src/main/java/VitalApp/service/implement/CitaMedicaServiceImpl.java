@@ -35,63 +35,75 @@ public class CitaMedicaServiceImpl implements CitaMedicaService {
 
     @Override
     public String agendarCita(CrearCitaMedicaDTO dto) throws Exception {
+        // 1️⃣ Obtener médico y paciente
         Medico medico = obtenerMedicoPorId(dto.idMedico());
-        ItemHorarioDTO horarioDTO = dto.horario();
         Paciente paciente = obtenerPacientePorId(dto.idPaciente());
+        ItemHorarioDTO horarioDTO = dto.horario();
 
-        HorarioMedico horarioSeleccionado = medico.getHorariosDisponibles().stream()
-                .filter(h -> h.getFecha().equals(horarioDTO.fecha())
-                        && h.getHoraInicio().equals(horarioDTO.horaInicio())
+        // 2️⃣ Buscar el bloque de horario base (sin fecha)
+        HorarioMedico horarioBase = medico.getHorariosDisponibles().stream()
+                .filter(h -> h.getHoraInicio().equals(horarioDTO.horaInicio())
                         && h.getHoraFin().equals(horarioDTO.horaFin()))
                 .findFirst()
                 .orElseThrow(() -> new Exception("Horario no disponible para el médico seleccionado."));
 
-        if (horarioSeleccionado.isReservado()) {
+        if (horarioBase.isReservado()) {
             throw new IllegalStateException("El horario ya está reservado.");
         }
 
-        horarioSeleccionado.setReservado(true);
+        // 3️⃣ Marcarlo como reservado (si quieres manejar reservas genéricas)
+        horarioBase.setReservado(true);
         medicoRepo.save(medico);
 
+        // 4️⃣ Crear una copia del horario con la fecha de la cita
+        HorarioMedico horarioConFecha = HorarioMedico.builder()
+                .horaInicio(horarioDTO.horaInicio())
+                .horaFin(horarioDTO.horaFin())
+                .reservado(true)
+                .build();
+
+        // 5️⃣ Crear la cita médica con la fecha concreta
         CitaMedica cita = CitaMedica.builder()
                 .idCliente(new ObjectId(paciente.getId()))
                 .idMedico(new ObjectId(medico.getId()))
-                .horario(horarioSeleccionado)
+                .horario(horarioConFecha)
                 .estado(EstadoCita.PENDIENTE)
                 .build();
 
         String id = citaRepo.save(cita).getId();
 
+        // 6️⃣ Enviar confirmaciones (usando la fecha del DTO, no del horario base)
         emailService.enviarConfirmacionCita(
                 paciente.getEmail(),
                 paciente.getNombre(),
-                horarioSeleccionado.getFecha().toString(),
-                horarioSeleccionado.getHoraInicio().toString()
+                horarioDTO.fecha().toString(),
+                horarioDTO.horaInicio().toString()
         );
 
         emailService.enviarConfirmacionCita(
                 medico.getCorreo(),
                 medico.getNombre(),
-                horarioSeleccionado.getFecha().toString(),
-                horarioSeleccionado.getHoraInicio().toString()
+                horarioDTO.fecha().toString(),
+                horarioDTO.horaInicio().toString()
         );
 
         return id;
     }
 
-    @Override
-    public String cancelarCita(String idCita) throws Exception {
-        CitaMedica cita = obtenerCitaPorId(idCita);
 
-        if (cita.getEstado() == EstadoCita.CANCELADA) {
-            throw new IllegalStateException("La cita ya fue cancelada.");
-        }
-
-        cita.setEstado(EstadoCita.CANCELADA);
-        liberarHorarioCita(cita);
-
-        return citaRepo.save(cita).getId();
-    }
+//    @Override
+//    public String cancelarCita(String idCita) throws Exception {
+//        CitaMedica cita = obtenerCitaPorId(idCita);
+//
+//        if (cita.getEstado() == EstadoCita.CANCELADA) {
+//            throw new IllegalStateException("La cita ya fue cancelada.");
+//        }
+//
+//        cita.setEstado(EstadoCita.CANCELADA);
+//        liberarHorarioCita(cita);
+//
+//        return citaRepo.save(cita).getId();
+//    }
 
     @Override
     public List<ItemCitaMedicaDTO> listarCitasPorPaciente(String idPaciente) {
@@ -166,18 +178,18 @@ public class CitaMedicaServiceImpl implements CitaMedicaService {
                 .orElseThrow(() -> new Exception("Paciente no encontrado con ID: " + id));
     }
 
-    private void liberarHorarioCita(CitaMedica cita) throws Exception {
-        Medico medico = obtenerMedicoPorId(cita.getIdMedico().toHexString());
-
-        Optional<HorarioMedico> horario = medico.getHorariosDisponibles().stream()
-                .filter(h -> h.getFecha().equals(cita.getHorario().getFecha())
-                        && h.getHoraInicio().equals(cita.getHorario().getHoraInicio())
-                        && h.getHoraFin().equals(cita.getHorario().getHoraFin()))
-                .findFirst();
-
-        horario.ifPresent(h -> h.setReservado(false));
-        medicoRepo.save(medico);
-    }
+//    private void liberarHorarioCita(CitaMedica cita) throws Exception {
+//        Medico medico = obtenerMedicoPorId(cita.getIdMedico().toHexString());
+//
+//        Optional<HorarioMedico> horario = medico.getHorariosDisponibles().stream()
+//                .filter(h -> h.getFecha().equals(cita.getHorario().getFecha())
+//                        && h.getHoraInicio().equals(cita.getHorario().getHoraInicio())
+//                        && h.getHoraFin().equals(cita.getHorario().getHoraFin()))
+//                .findFirst();
+//
+//        horario.ifPresent(h -> h.setReservado(false));
+//        medicoRepo.save(medico);
+//    }
 
     private ItemCitaMedicaDTO convertToItemDTO(CitaMedica cita) {
         return new ItemCitaMedicaDTO(

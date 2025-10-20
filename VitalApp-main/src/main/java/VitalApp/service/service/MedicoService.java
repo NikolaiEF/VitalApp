@@ -10,6 +10,6 @@ public interface MedicoService {
     String eliminarMedico(String id) throws Exception;
     InformacionMedicoDTO obtenerInformacionMedico(String id) throws Exception;
     List<ItemMedicoDTO> listarMedicos();
-    String agregarHorario(String idMedico, CrearHorarioDTO horario) throws Exception;
-    List<ItemHorarioDTO> listarHorarios(String idMedico) throws Exception;
+   // String agregarHorario(String idMedico, CrearHorarioDTO horario) throws Exception;
+  //  List<ItemHorarioDTO> listarHorarios(String idMedico) throws Exception;
 }

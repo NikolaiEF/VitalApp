@@ -27,11 +27,11 @@ public class CitaMedicaController {
         return ResponseEntity.ok(new MensajeDTO<>(false, "Cita agendada exitosamente con ID: " + id));
     }
 
-    @PutMapping("/cancelar/{id}")
-    public ResponseEntity<MensajeDTO<String>> cancelarCita(@PathVariable String id) throws Exception {
-        citaMedicaService.cancelarCita(id);
-        return ResponseEntity.ok(new MensajeDTO<>(false, "Cita cancelada exitosamente"));
-    }
+//    @PutMapping("/cancelar/{id}")
+//    public ResponseEntity<MensajeDTO<String>> cancelarCita(@PathVariable String id) throws Exception {
+//        citaMedicaService.cancelarCita(id);
+//        return ResponseEntity.ok(new MensajeDTO<>(false, "Cita cancelada exitosamente"));
+//    }
 
     @GetMapping("/listar/paciente/{idPaciente}")
     public ResponseEntity<MensajeDTO<List<ItemCitaMedicaDTO>>> listarPorPaciente(@PathVariable String idPaciente) {

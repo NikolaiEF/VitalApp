@@ -1,5 +1,6 @@
 package VitalApp.dto.medico;
 
+import VitalApp.model.enums.Especialidad;
 import VitalApp.model.vo.HorarioMedico;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +10,7 @@ import java.util.List;
 public record EditarMedicoDTO(
         @NotBlank @Length(max = 36) String id,
         @NotBlank @Length(max = 100) String nombre,
-        @NotBlank @Length(max = 50) String especialidad,
+        @NotBlank Especialidad especialidad,
         @NotBlank @Length(max = 100) String email,
         @NotNull List<HorarioMedico> horariosDisponibles
 ) {}

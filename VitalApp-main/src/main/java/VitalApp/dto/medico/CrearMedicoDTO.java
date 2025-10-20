@@ -1,5 +1,6 @@
 package VitalApp.dto.medico;
 
+import VitalApp.model.enums.Especialidad;
 import VitalApp.model.enums.jornadaMedico;
 import VitalApp.model.vo.HorarioMedico;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +13,8 @@ public record CrearMedicoDTO(
         @NotBlank @Length(max = 100) String id,
         @NotBlank @Length(max = 100) String nombre,
         @NotBlank @Length(max = 100) String apellido,
-        @NotBlank @Length(max = 50) String especialidad,
+        @NotNull  Especialidad especialidad,
         @NotBlank @Length(max = 100) String correo,
-        @NotNull jornadaMedico jornadaMedico
+        @NotNull jornadaMedico jornadaMedico,
+        List<HorarioMedico> horariosDisponibles
 ) {}

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CitaMedicaService {
     String agendarCita(CrearCitaMedicaDTO cita) throws Exception;
-    String cancelarCita(String idCita) throws Exception;
+   // String cancelarCita(String idCita) throws Exception;
     List<ItemCitaMedicaDTO> listarCitasPorPaciente(String idPaciente);
     List<ItemCitaMedicaDTO> listarCitasPorMedico(String idMedico);
     String agregarResultadoMedico(String idCita, CrearResultadoMedicoDTO resultado) throws Exception;

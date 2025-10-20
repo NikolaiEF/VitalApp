@@ -23,3 +23,15 @@ EXPOSE ${PORT}
 
 # Comando de ejecución
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Etapa de ejecución
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

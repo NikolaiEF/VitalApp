@@ -1,5 +1,6 @@
 package VitalApp.model.documents;
 
+import VitalApp.model.enums.Especialidad;
 import VitalApp.model.enums.jornadaMedico;
 import VitalApp.model.vo.HorarioMedico;
 import lombok.*;
@@ -24,7 +25,7 @@ public class Medico {
     private String id;
     private String nombre;
     private String apellido;
-    private String especialidad;
+    private Especialidad especialidad;
     private String correo;
     private List<HorarioMedico> horariosDisponibles;
     private jornadaMedico jornadaMedico;

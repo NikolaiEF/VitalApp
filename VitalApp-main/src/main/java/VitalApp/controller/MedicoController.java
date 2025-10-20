@@ -51,15 +51,15 @@ public class MedicoController {
 
     // Gestión de horarios
 
-    @PostMapping("/horario/agregar/{idMedico}")
-    public ResponseEntity<MensajeDTO<String>> agregarHorario(@PathVariable String idMedico, @Valid @RequestBody CrearHorarioDTO dto) throws Exception {
-        medicoService.agregarHorario(idMedico, dto);
-        return ResponseEntity.ok(new MensajeDTO<>(false, "Horario agregado exitosamente"));
-    }
-
-    @GetMapping("/horarios/{idMedico}")
-    public ResponseEntity<MensajeDTO<List<ItemHorarioDTO>>> listarHorarios(@PathVariable String idMedico) throws Exception {
-        List<ItemHorarioDTO> lista = medicoService.listarHorarios(idMedico);
-        return ResponseEntity.ok(new MensajeDTO<>(false, lista));
-    }
+//    @PostMapping("/horario/agregar/{idMedico}")
+//    public ResponseEntity<MensajeDTO<String>> agregarHorario(@PathVariable String idMedico, @Valid @RequestBody CrearHorarioDTO dto) throws Exception {
+//        medicoService.agregarHorario(idMedico, dto);
+//        return ResponseEntity.ok(new MensajeDTO<>(false, "Horario agregado exitosamente"));
+//    }
+//
+//    @GetMapping("/horarios/{idMedico}")
+//    public ResponseEntity<MensajeDTO<List<ItemHorarioDTO>>> listarHorarios(@PathVariable String idMedico) throws Exception {
+//        List<ItemHorarioDTO> lista = medicoService.listarHorarios(idMedico);
+//        return ResponseEntity.ok(new MensajeDTO<>(false, lista));
+//    }
 }
